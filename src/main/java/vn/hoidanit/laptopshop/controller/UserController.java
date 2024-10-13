@@ -21,27 +21,28 @@ public class UserController {
         this.userService = userService;
     }
 
-    //Mô hình MVC: video 56
-    //Người dùng vào website sẽ chạy vào RequestMapping("/")
-    //Sau đó Controller sẽ gọi tới model (userService)
-    //Model sẽ xử lý dữ liệu và trả về controller (model.addAttribute)
-    //Controller sẽ return ra file jsp 
+    // Mô hình MVC: video 56
+    // Người dùng vào website sẽ chạy vào RequestMapping("/")
+    // Sau đó Controller sẽ gọi tới model (userService)
+    // Model sẽ xử lý dữ liệu và trả về controller (model.addAttribute)
+    // Controller sẽ return ra file jsp
 
     @RequestMapping("/")
     public String getHomePage(Model model) {
         List<User> arrUsers = this.userService.getAllUsersByEmail("1@gmail.com");
-        System.out.println("arrUsers: " + arrUsers);
         model.addAttribute("eric", "test");
         model.addAttribute("hoidanit", "from controller with model");
         return "hello";
     }
-    
+
     @RequestMapping("/admin/user")
     public String getUserPage(Model model) {
+        List<User> users = this.userService.getAllUsers();
+        model.addAttribute("users", users);
         return "admin/user/table-user";
     }
 
-    @RequestMapping("/admin/user/create")  //GET
+    @RequestMapping("/admin/user/create") // GET
     public String getCreateUserPage(Model model) {
         model.addAttribute("newUser", new User());
         return "admin/user/create";
@@ -49,10 +50,7 @@ public class UserController {
 
     @RequestMapping(value = "/admin/user/create", method = RequestMethod.POST)
     public String createUserPage(Model model, @ModelAttribute("newUser") User dataUser) {
-        System.out.println("Data: " + dataUser);
         this.userService.handleSaveUser(dataUser);
-        return "hello";
+        return "redirect:/admin/user";
     }
 }
-
-
