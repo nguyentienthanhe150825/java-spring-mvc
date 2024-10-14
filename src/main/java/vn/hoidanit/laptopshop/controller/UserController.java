@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -60,6 +61,30 @@ public class UserController {
     @RequestMapping(value = "/admin/user/create", method = RequestMethod.POST)
     public String createUserPage(Model model, @ModelAttribute("newUser") User dataUser) {
         this.userService.handleSaveUser(dataUser);
+        return "redirect:/admin/user";
+    }
+
+    @RequestMapping("/admin/user/update/{id}") // GET
+    public String getUpdateUserPage(Model model, @PathVariable long id) {
+        User currentUser = this.userService.getUserById(id);
+        model.addAttribute("newUser", currentUser);
+        return "admin/user/update";
+    }
+
+    @PostMapping("/admin/user/update")
+    public String postUpdateUser(Model model, @ModelAttribute("newUser") User dataUser) {
+        User currentUser = this.userService.getUserById(dataUser.getId());
+        if (currentUser != null) {
+            currentUser.setAddress(dataUser.getAddress());
+            currentUser.setFullName(dataUser.getFullName());
+            currentUser.setPhone(dataUser.getPhone());
+
+            // Vì password không có trong file jsp do đó muốn giữ nguyên password mà ko bị
+            // cập nhật lại là null
+            // thì cần update currentUser chứ không phải dataUser vì trong dataUser thì
+            // password = null
+            this.userService.handleSaveUser(currentUser);
+        }
         return "redirect:/admin/user";
     }
 }
