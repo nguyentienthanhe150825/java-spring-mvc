@@ -11,7 +11,7 @@
                 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
                 <meta name="description" content="Hỏi Dân IT - Dự án laptopshop" />
                 <meta name="author" content="Hỏi Dân IT" />
-                <title>Create User</title>
+                <title>View User</title>
                 <link href="/css/styles.css" rel="stylesheet" />
                 <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
             </head>
@@ -35,41 +35,30 @@
                                 </ol>
 
                                 <!-- Body -->
-                                <div class="mt-5">
+                                <div class="container mt-5">
                                     <div class="row">
                                         <div class="col-md-6 col-12 mx-auto">
-                                            <h3>Create a user</h3>
+                                            <div class="d-flex justify-content-between">
+                                                <h3>User detail with id = ${id}</h3>
+                                            </div>
                                             <hr />
-                                            <form:form method="post" action="/admin/user/create"
-                                                modelAttribute="newUser">
-                                                <div class="mb-3">
-                                                    <label class="form-label">Email:</label>
-                                                    <form:input type="email" class="form-control" path="email" />
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label class="form-label">Password:</label>
-                                                    <form:input type="password" class="form-control" path="password" />
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label class="form-label">Phone number:</label>
-                                                    <form:input type="text" class="form-control" path="phone" />
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label class="form-label">Full Name:</label>
-                                                    <form:input type="text" class="form-control" path="fullName" />
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label class="form-label">Address:</label>
-                                                    <form:input type="text" class="form-control" path="address" />
-                                                </div>
 
-                                                <button type="submit" class="btn btn-primary">Create</button>
-                                            </form:form>
+                                            <div class="card" style="width: 60%">
+                                                <div class="card-header">
+                                                    User information
+                                                </div>
+                                                <ul class="list-group list-group-flush">
+                                                    <li class="list-group-item">ID: ${user.id}</li>
+                                                    <li class="list-group-item">Email: ${user.email}</li>
+                                                    <li class="list-group-item">Full Name: ${user.fullName}</li>
+                                                    <li class="list-group-item">Address: ${user.address}</li>
+                                                </ul>
+                                            </div>
+                                            <a href="/admin/user" class="btn btn-success mt-3">Back</a>
                                         </div>
-
                                     </div>
-
                                 </div>
+
                             </div>
                         </main>
 
