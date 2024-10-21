@@ -2,6 +2,7 @@ package vn.hoidanit.laptopshop.controller.admin;
 
 import java.util.List;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import vn.hoidanit.laptopshop.domain.Role;
 import vn.hoidanit.laptopshop.domain.User;
 import vn.hoidanit.laptopshop.service.UploadService;
 import vn.hoidanit.laptopshop.service.UserService;
@@ -22,10 +24,13 @@ public class UserController {
     // DI
     private final UserService userService;
     private final UploadService uploadService;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserController(UserService userService, UploadService uploadService) {
+    public UserController(UserService userService, UploadService uploadService,
+    PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.uploadService = uploadService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     // Mô hình MVC: video 56
@@ -69,7 +74,24 @@ public class UserController {
 
         String avatar = this.uploadService.handleSaveUploadFile(file, "avatar");
 
-        // this.userService.handleSaveUser(dataUser);
+        // Link mã hóa BCrypt:
+        // https://stackoverflow.com/questions/55548290/using-bcrypt-in-spring
+        String hashPassword = this.passwordEncoder.encode(dataUser.getPassword());
+
+        dataUser.setAvatar(avatar);
+        dataUser.setPassword(hashPassword);
+
+        //Dữ liệu từ front-end gửi về là role.name
+        //Trong khi ở Object User thì role là 1 đối tượng (Role)
+        //Do đó: đầu tiên cần phải tìm đối tượng Role theo role.name
+        Role roleCreate = this.userService.getRoleByName(dataUser.getRole().getName());
+        
+        //Sau đó: sẽ lưu vào database dưới dạng roleId chứ ko phải roleName
+        //Lưu RoleId vì ở class User thì mapping bảng Role = @JoinColumn(name = "role_id")
+        dataUser.setRole(roleCreate);
+
+        //save
+        this.userService.handleSaveUser(dataUser);
         return "redirect:/admin/user";
     }
 
