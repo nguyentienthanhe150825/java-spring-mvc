@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import jakarta.validation.Valid;
 import vn.hoidanit.laptopshop.domain.Role;
 import vn.hoidanit.laptopshop.domain.User;
 import vn.hoidanit.laptopshop.service.UploadService;
@@ -27,7 +30,7 @@ public class UserController {
     private final PasswordEncoder passwordEncoder;
 
     public UserController(UserService userService, UploadService uploadService,
-    PasswordEncoder passwordEncoder) {
+            PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.uploadService = uploadService;
         this.passwordEncoder = passwordEncoder;
@@ -69,8 +72,20 @@ public class UserController {
     }
 
     @PostMapping(value = "/admin/user/create")
-    public String createUserPage(@ModelAttribute("newUser") User dataUser,
+    public String createUserPage(@ModelAttribute("newUser") @Valid User dataUser, BindingResult bindingResult,
             @RequestParam("uploadFile") MultipartFile file) {
+
+        // Validate
+        List<FieldError> errors = bindingResult.getFieldErrors();
+        for (FieldError error : errors) {
+            System.out.println(">>>>>>>>" + error.getField() + " - " + error.getDefaultMessage());
+        }
+
+        // Check valid Front-end:
+        // https://mkyong.com/spring-mvc/spring-mvc-form-check-if-a-field-has-an-error/
+        if (bindingResult.hasErrors()) {
+            return "admin/user/create";
+        }
 
         String avatar = this.uploadService.handleSaveUploadFile(file, "avatar");
 
@@ -81,16 +96,17 @@ public class UserController {
         dataUser.setAvatar(avatar);
         dataUser.setPassword(hashPassword);
 
-        //Dữ liệu từ front-end gửi về là role.name
-        //Trong khi ở Object User thì role là 1 đối tượng (Role)
-        //Do đó: đầu tiên cần phải tìm đối tượng Role theo role.name
+        // Dữ liệu từ front-end gửi về là role.name
+        // Trong khi ở Object User thì role là 1 đối tượng (Role)
+        // Do đó: đầu tiên cần phải tìm đối tượng Role theo role.name
         Role roleCreate = this.userService.getRoleByName(dataUser.getRole().getName());
-        
-        //Sau đó: sẽ lưu vào database dưới dạng roleId chứ ko phải roleName
-        //Lưu RoleId vì ở class User thì mapping bảng Role = @JoinColumn(name = "role_id")
+
+        // Sau đó: sẽ lưu vào database dưới dạng roleId chứ ko phải roleName
+        // Lưu RoleId vì ở class User thì mapping bảng Role = @JoinColumn(name =
+        // "role_id")
         dataUser.setRole(roleCreate);
 
-        //save
+        // save
         this.userService.handleSaveUser(dataUser);
         return "redirect:/admin/user";
     }
