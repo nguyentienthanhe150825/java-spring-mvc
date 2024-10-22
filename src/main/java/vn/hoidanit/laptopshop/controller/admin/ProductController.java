@@ -17,12 +17,25 @@ import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.validation.Valid;
 import vn.hoidanit.laptopshop.domain.Product;
+import vn.hoidanit.laptopshop.service.ProductService;
+import vn.hoidanit.laptopshop.service.UploadService;
 
 @Controller
 public class ProductController {
 
+    // DI
+    private final ProductService productService;
+    private final UploadService uploadService;
+
+    public ProductController(ProductService productService, UploadService uploadService) {
+        this.uploadService = uploadService;
+        this.productService = productService;
+    }
+
     @GetMapping("/admin/product")
-    public String getProduct() {
+    public String getProduct(Model model) {
+        List<Product> products = this.productService.getAllProducts();
+        model.addAttribute("products", products);
         return "admin/product/show";
     }
 
@@ -48,6 +61,13 @@ public class ProductController {
         if (bindingResult.hasErrors()) {
             return "admin/product/create";
         }
+
+        String imageProduct = this.uploadService.handleSaveUploadFile(file, "product");
+
+        dataProduct.setImage(imageProduct);
+
+        // save
+        this.productService.createProduct(dataProduct);
 
         return "redirect:/admin/product";
     }

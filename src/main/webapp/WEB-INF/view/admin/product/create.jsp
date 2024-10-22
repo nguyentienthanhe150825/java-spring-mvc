@@ -58,10 +58,23 @@
                                             <form:form method="post" enctype="multipart/form-data"
                                                 action="/admin/product/create" modelAttribute="newProduct" class="row">
 
+                                                <c:set var="errorName">
+                                                    <form:errors path="name" cssClass="invalid-feedback" />
+                                                </c:set>
+                                                <c:set var="errorPrice">
+                                                    <form:errors path="price" cssClass="invalid-feedback" />
+                                                </c:set>
+                                                <c:set var="errorDetailDesc">
+                                                    <form:errors path="detailDesc" cssClass="invalid-feedback" />
+                                                </c:set>
+                                                <c:set var="errorShortDesc">
+                                                    <form:errors path="shortDesc" cssClass="invalid-feedback" />
+                                                </c:set>
+                                                <c:set var="errorQuantity">
+                                                    <form:errors path="quantity" cssClass="invalid-feedback" />
+                                                </c:set>
+
                                                 <div class="mb-3 col-12 col-md-6">
-                                                    <c:set var="errorName">
-                                                        <form:errors path="name" cssClass="invalid-feedback" />
-                                                    </c:set>
                                                     <label class="form-label">Name:</label>
                                                     <form:input type="text"
                                                         class="form-control ${not empty errorName ? 'is-invalid' : ''}"
@@ -70,9 +83,6 @@
                                                 </div>
 
                                                 <div class="mb-3 col-12 col-md-6">
-                                                    <c:set var="errorPrice">
-                                                        <form:errors path="price" cssClass="invalid-feedback" />
-                                                    </c:set>
                                                     <label class="form-label">Price:</label>
                                                     <form:input type="number"
                                                         class="form-control ${not empty errorPrice ? 'is-invalid' : ''}"
@@ -81,9 +91,6 @@
                                                 </div>
 
                                                 <div class="mb-3 col-12">
-                                                    <c:set var="errorDetailDesc">
-                                                        <form:errors path="detailDesc" cssClass="invalid-feedback" />
-                                                    </c:set>
                                                     <label class="form-label">Detail description:</label>
                                                     <form:input type="text"
                                                         class="form-control ${not empty errorDetailDesc ? 'is-invalid' : ''}"
@@ -92,9 +99,6 @@
                                                 </div>
 
                                                 <div class="mb-3 col-12 col-md-6">
-                                                    <c:set var="errorShortDesc">
-                                                        <form:errors path="shortDesc" cssClass="invalid-feedback" />
-                                                    </c:set>
                                                     <label class="form-label">Short description:</label>
                                                     <form:input type="text"
                                                         class="form-control ${not empty errorShortDesc ? 'is-invalid' : ''}"
@@ -103,9 +107,6 @@
                                                 </div>
 
                                                 <div class="mb-3 col-12 col-md-6">
-                                                    <c:set var="errorQuantity">
-                                                        <form:errors path="quantity" cssClass="invalid-feedback" />
-                                                    </c:set>
                                                     <label class="form-label">Quantity:</label>
                                                     <form:input type="number"
                                                         class="form-control ${not empty errorQuantity ? 'is-invalid' : ''}"
