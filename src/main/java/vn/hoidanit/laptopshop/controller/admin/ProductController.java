@@ -39,6 +39,14 @@ public class ProductController {
         return "admin/product/show";
     }
 
+    @GetMapping("/admin/product/{id}")
+    public String getProductDetailPage(Model model, @PathVariable long id) {
+        Product product = this.productService.getProductById(id).get();
+        model.addAttribute("product", product);
+        model.addAttribute("id", id);
+        return "admin/product/detail";
+    }
+
     @GetMapping("/admin/product/create")
     public String getCreateProductPage(Model model) {
         model.addAttribute("newProduct", new Product());
@@ -69,6 +77,59 @@ public class ProductController {
         // save
         this.productService.createProduct(dataProduct);
 
+        return "redirect:/admin/product";
+    }
+
+    @GetMapping("/admin/product/update/{id}")
+    public String getUpdateProductPage(Model model, @PathVariable long id) {
+        Product currentProduct = this.productService.getProductById(id).get();
+        model.addAttribute("newProduct", currentProduct);
+        return "admin/product/update";
+    }
+
+    @PostMapping("/admin/product/update")
+    public String handleUpdateProduct(@ModelAttribute("newProduct") @Valid Product dataProduct,
+            BindingResult bindingResult, @RequestParam("uploadFile") MultipartFile file) {
+
+        // Check valid Front-end:
+        // https://mkyong.com/spring-mvc/spring-mvc-form-check-if-a-field-has-an-error/
+        if (bindingResult.hasErrors()) {
+            return "admin/product/update";
+        }
+
+        Product currentProduct = this.productService.getProductById(dataProduct.getId()).get();
+
+        if(currentProduct != null) {
+            //update new image
+            if(!file.isEmpty()) {
+                String img = this.uploadService.handleSaveUploadFile(file, "product");
+                currentProduct.setImage(img);
+            }
+            currentProduct.setName(dataProduct.getName());
+            currentProduct.setPrice(dataProduct.getPrice());
+            currentProduct.setQuantity(dataProduct.getQuantity());
+            currentProduct.setDetailDesc(dataProduct.getDetailDesc());
+            currentProduct.setShortDesc(dataProduct.getShortDesc());
+            currentProduct.setFactory(dataProduct.getFactory());
+            currentProduct.setTarget(dataProduct.getTarget());
+
+            this.productService.createProduct(currentProduct);
+        }
+
+        return "redirect:/admin/product";
+    }
+
+    @GetMapping("/admin/product/delete/{id}")
+    public String getDeleteProductPage(Model model, @PathVariable long id) {
+        Product currentProduct = this.productService.getProductById(id).get();
+        model.addAttribute("id", id);
+        model.addAttribute("newProduct", currentProduct);
+        return "admin/product/delete";
+    }
+
+    @PostMapping("/admin/product/delete")
+    public String postDeleteProduct(@ModelAttribute("newProduct") Product dataProduct) {
+        this.productService.deleteProduct(dataProduct.getId());
         return "redirect:/admin/product";
     }
 }

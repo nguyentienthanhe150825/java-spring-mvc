@@ -11,7 +11,7 @@
                 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
                 <meta name="description" content="Hỏi Dân IT - Dự án laptopshop" />
                 <meta name="author" content="Hỏi Dân IT" />
-                <title>Delete User</title>
+                <title>View Product</title>
                 <link href="/css/styles.css" rel="stylesheet" />
                 <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
             </head>
@@ -28,33 +28,45 @@
                     <div id="layoutSidenav_content">
                         <main>
                             <div class="container-fluid px-4">
-                                <h1 class="mt-4">Manage Users</h1>
+                                <h1 class="mt-4">Manage Product</h1>
                                 <ol class="breadcrumb mb-4">
                                     <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
-                                    <li class="breadcrumb-item"><a href="/admin/user">Users</a></li>
-                                    <li class="breadcrumb-item active"> Delete</li>
+                                    <li class="breadcrumb-item"> <a href="/admin/product">Products</a></li>
+                                    <li class="breadcrumb-item active">View detail</li>
                                 </ol>
 
                                 <!-- Body -->
                                 <div class="container mt-5">
                                     <div class="row">
                                         <div class="col-md-6 col-12 mx-auto">
-                                            <h3>Delete a user with id = ${id}</h3>
-                                            <hr />
-                                            <div class="alert alert-danger">
-                                                Are you sure to delete this user ?
+                                            <div class="d-flex justify-content-between">
+                                                <h3>Product detail with id = ${id}</h3>
                                             </div>
-                                            <form:form method="POST" action="/admin/user/delete"
-                                                modelAttribute="newUser">
-                                                <div class="mb-3" style="display: none;">
-                                                    <label class="form-label">Id:</label>
-                                                    <form:input type="text" class="form-control" path="id" />
+                                            <hr />
+
+                                            <div class="card" style="width: 60%">
+                                                <img class="card-img-top" src="/images/product/${product.image}"
+                                                    alt="Card image cap">
+
+                                                <div class="card-header">
+                                                    Product information
                                                 </div>
-                                                <button class="btn btn-danger">Confirm</button>
-                                            </form:form>
+                                                <ul class="list-group list-group-flush">
+                                                    <li class="list-group-item">ID: ${product.id}</li>
+                                                    <li class="list-group-item">Name: ${product.name}</li>
+                                                    <li class="list-group-item">Price: ${product.price}</li>
+                                                    <li class="list-group-item">Detail Desc: ${product.detailDesc}</li>
+                                                    <li class="list-group-item">Short Desc: ${product.shortDesc}</li>
+                                                    <li class="list-group-item">Quantity: ${product.quantity}</li>
+                                                    <li class="list-group-item">Factory: ${product.factory}</li>
+                                                    <li class="list-group-item">Target: ${product.target}</li>
+                                                </ul>
+                                            </div>
+                                            <a href="/admin/product" class="btn btn-success mt-3">Back</a>
                                         </div>
                                     </div>
                                 </div>
+
                             </div>
                         </main>
 
