@@ -27,6 +27,10 @@ public class ProductService {
         return this.productRepository.findAll();
     }
 
+    public List<Product> getProductByFactory(String factory) {
+        return this.productRepository.findByFactory(factory);
+    }
+
     public Optional<Product> getProductById(long id) {
         return this.productRepository.findById(id);
     }
