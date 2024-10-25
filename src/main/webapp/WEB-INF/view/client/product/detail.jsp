@@ -48,20 +48,25 @@
                 <!-- Header -->
                 <jsp:include page="../layout/header.jsp" />
 
-                <!-- Single Page Header start -->
-                <div class="container-fluid page-header py-5">
-                    <h1 class="text-center text-white display-6">Shop Detail</h1>
-                    <ol class="breadcrumb justify-content-center mb-0">
-                        <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
-                        <li class="breadcrumb-item active text-white">Shop Detail</li>
-                    </ol>
-                </div>
-                <!-- Single Page Header End -->
-
                 <!-- Body -->
                 <div class="container-fluid py-5 mt-5">
                     <div class="container py-5">
                         <div class="row g-4 mb-5">
+                            <!-- Tạo khoản trống giữa header và body -->
+                            <div>
+                                <nav aria-label="breadcrumb">
+
+                                </nav>
+                            </div>
+
+                            <div>
+                                <nav aria-label="breadcrumb">
+                                    <ol class="breadcrumb">
+                                        <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
+                                        <li class="breadcrumb-item active" aria-current="page">Chi tiết sản phẩm</li>
+                                    </ol>
+                                </nav>
+                            </div>
                             <div class="col-lg-8 col-xl-9">
                                 <div class="row g-4">
                                     <div class="col-lg-6">
@@ -175,7 +180,7 @@
                                             </div>
                                         </div>
                                     </c:forEach>
-                                    
+
                                 </div>
                             </div>
                         </c:if>
