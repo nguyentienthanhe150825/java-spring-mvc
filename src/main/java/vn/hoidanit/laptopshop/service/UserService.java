@@ -57,4 +57,10 @@ public class UserService {
         return user;
     }
 
+    //https://stackoverflow.com/questions/32801008/how-to-find-out-if-an-email-already-exist-with-jpa-spring-and-sending-some-error
+    //spring jps check email exist
+    public boolean checkEmailExist(String email) {
+        return this.userRepository.existsByEmail(email);
+    }
+
 }
