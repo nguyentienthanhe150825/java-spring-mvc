@@ -30,7 +30,7 @@ public class UserService {
     }
 
     public List<User> getAllUsersByEmail(String email) {
-        return this.userRepository.findByEmail(email);
+        return this.userRepository.findOneByEmail(email);
     }
 
     public User handleSaveUser(User user) {
@@ -61,6 +61,10 @@ public class UserService {
     //spring jps check email exist
     public boolean checkEmailExist(String email) {
         return this.userRepository.existsByEmail(email);
+    }
+
+    public User getUserByEmail(String email) {
+        return this.userRepository.findByEmail(email);
     }
 
 }
