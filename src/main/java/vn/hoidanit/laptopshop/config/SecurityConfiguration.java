@@ -88,7 +88,8 @@ public class SecurityConfiguration {
                         .loginPage("/login")
                         .failureUrl("/login?error")
                         .successHandler(customSuccessHandler())
-                        .permitAll());
+                        .permitAll())
+                .exceptionHandling(ex -> ex.accessDeniedPage("/access-deny"));    // https://www.baeldung.com/spring-security-custom-access-denied-page
 
         return http.build();
     }
