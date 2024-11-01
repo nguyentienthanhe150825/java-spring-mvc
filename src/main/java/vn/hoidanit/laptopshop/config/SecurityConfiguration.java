@@ -11,13 +11,14 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 import jakarta.servlet.DispatcherType;
 import vn.hoidanit.laptopshop.service.CustomUserDetailsService;
 import vn.hoidanit.laptopshop.service.UserService;
 
 @Configuration
-@EnableMethodSecurity(securedEnabled = true)
+@EnableMethodSecurity(securedEnabled = true) // https://docs.spring.io/spring-security/reference/servlet/authorization/method-security.html
 public class SecurityConfiguration {
 
     @Bean
@@ -30,18 +31,6 @@ public class SecurityConfiguration {
         return new CustomUserDetailsService(userService);
     }
 
-    // @Bean
-    // public AuthenticationManager authenticationManager(HttpSecurity http,
-    // PasswordEncoder passwordEncoder,
-    // UserDetailsService userDetailsService) throws Exception {
-    // AuthenticationManagerBuilder authenticationManagerBuilder = http
-    // .getSharedObject(AuthenticationManagerBuilder.class);
-    // authenticationManagerBuilder
-    // .userDetailsService(userDetailsService)
-    // .passwordEncoder(passwordEncoder);
-    // return authenticationManagerBuilder.build();
-    // }
-
     // https://stackoverflow.com/questions/43007763/spring-security-encoded-password-gives-me-bad-credentials
     @Bean
     public DaoAuthenticationProvider authProvider(
@@ -51,10 +40,16 @@ public class SecurityConfiguration {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(userDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder);
-        // authProvider.setHideUserNotFoundExceptions(false); //Ném ra lỗi ở class
+        // authProvider.setHideUserNotFoundExceptions(false); //Khi đăng nhập sai email
+        // hoặc password sẽ báo lỗi ở CustomUserDetailsService (user not found)
         // CustomUserDetailsService
 
         return authProvider;
+    }
+
+    @Bean
+    public AuthenticationSuccessHandler customSuccessHandler() {
+        return new CustomSuccessHandler();
     }
 
     // Tương tự class: #SpringBootWebSecurityConfiguration
@@ -62,28 +57,37 @@ public class SecurityConfiguration {
     // cho form login mặc định ở class SpringBootWebSecurityConfiguration
     // (http.formLogin(withDefaults());)
     // ----------------------------------------
-    // DispatcherType.FORWARD: Khi người dùng vào url : '/login' thì javaspring sẽ
+    // DispatcherType.FORWARD: Khi người dùng vào url : '/login' thì spring security
+    // sẽ
     // auto forward tới trang view (cụ thể là file jsp)
-    // Mặc định java spring security sẽ check 2 dạng Dispatcher: FORWARD và INCLUDE
-    // Nếu KO CÓ DispatcherType.INCLUDE.permitAll() thì ví dụ người dùng vào
-    // request: "/"
-    // => thì java spring security sẽ chặn không cho vào
-    // this.productService.getAllProducts(); => project sẽ bị lỗi
+
+    // https://docs.spring.io/spring-security/reference/servlet/authorization/method-security.html#using-authorization-expression-fields-and-methods
+    // https://docs.spring.io/spring-security/reference/servlet/authorization/authorize-http-requests.html
+
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        // v6 . lamda
         http
                 .authorizeHttpRequests(authorize -> authorize
                         .dispatcherTypeMatchers(DispatcherType.FORWARD,
                                 DispatcherType.INCLUDE)
                         .permitAll()
 
-                        .requestMatchers("/", "/login", "/client/**", "/css/**", "/js/**", "/images/**").permitAll()
+                        // Không biết role: bất cứ ai cũng có thể truy cập vào homepage ("/") và xem chi
+                        // tiết ("/product/**")
+                        .requestMatchers("/", "/login", "/product/**",
+                                "/client/**", "/css/**", "/js/**", "/images/**")
+                        .permitAll()
+                        // Default: hasRole sẽ tự động bỏ tiền tố prefix(ROLE_)
+                        .requestMatchers("/admin/**").hasRole("ADMIN") // Collections.singletonList(new
+                                                                       // SimpleGrantedAuthority("ROLE_" +
+                                                                       // user.getRole().getName())));
                         .anyRequest().authenticated())
-                // .anyRequest().permitAll()): thì tất cả request vào các url khác đều dc chấp thuận
 
                 .formLogin(formLogin -> formLogin
                         .loginPage("/login")
                         .failureUrl("/login?error")
+                        .successHandler(customSuccessHandler())
                         .permitAll());
 
         return http.build();
