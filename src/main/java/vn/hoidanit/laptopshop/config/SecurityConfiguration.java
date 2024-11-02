@@ -7,11 +7,13 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.session.security.web.authentication.SpringSessionRememberMeServices;
 
 import jakarta.servlet.DispatcherType;
 import vn.hoidanit.laptopshop.service.CustomUserDetailsService;
@@ -52,6 +54,15 @@ public class SecurityConfiguration {
         return new CustomSuccessHandler();
     }
 
+    // https://docs.spring.io/spring-session/reference/3.0/spring-security.html#spring-security-concurrent-sessions
+    @Bean
+    public SpringSessionRememberMeServices rememberMeServices() {
+        SpringSessionRememberMeServices rememberMeServices = new SpringSessionRememberMeServices();
+        // optionally customize
+        rememberMeServices.setAlwaysRemember(true); // setAlwaysRemember có private int validitySeconds = 2592000;
+        return rememberMeServices;
+    }
+
     // Tương tự class: #SpringBootWebSecurityConfiguration
     // Thông báo với spring security để thay đổi sang form login đã được custom thay
     // cho form login mặc định ở class SpringBootWebSecurityConfiguration
@@ -84,12 +95,21 @@ public class SecurityConfiguration {
                                                                        // user.getRole().getName())));
                         .anyRequest().authenticated())
 
+                .sessionManagement((sessionManagement) -> sessionManagement
+                        .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
+                        .invalidSessionUrl("/logout?expired")
+                        .maximumSessions(1)
+                        .maxSessionsPreventsLogin(false))
+
+                .logout(logout -> logout.deleteCookies("JSESSIONID").invalidateHttpSession(true))
+
+                .rememberMe(r -> r.rememberMeServices(rememberMeServices()))
                 .formLogin(formLogin -> formLogin
                         .loginPage("/login")
                         .failureUrl("/login?error")
                         .successHandler(customSuccessHandler())
                         .permitAll())
-                .exceptionHandling(ex -> ex.accessDeniedPage("/access-deny"));    // https://www.baeldung.com/spring-security-custom-access-denied-page
+                .exceptionHandling(ex -> ex.accessDeniedPage("/access-deny")); // https://www.baeldung.com/spring-security-custom-access-denied-page
 
         return http.build();
     }
