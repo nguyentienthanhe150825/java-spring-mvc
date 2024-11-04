@@ -52,14 +52,7 @@
                 <div class="container-fluid py-5 mt-5">
                     <div class="container py-5">
                         <div class="row g-4 mb-5">
-                            <!-- Tạo khoản trống giữa header và body -->
-                            <div>
-                                <nav aria-label="breadcrumb">
-
-                                </nav>
-                            </div>
-
-                            <div>
+                            <div class="mt-5">
                                 <nav aria-label="breadcrumb">
                                     <ol class="breadcrumb">
                                         <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
