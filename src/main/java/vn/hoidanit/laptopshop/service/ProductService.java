@@ -96,7 +96,7 @@ public class ProductService {
                     this.cartRepository.save(cart);
 
                     //update sum trong session để lấy ra sum rồi hiển thị ở mục Cart <header>
-                    //session.setAttribute("sum", sum);
+                    session.setAttribute("sum", sum);
                 } else {
                     oldDetail.setQuantity(oldDetail.getQuantity() + 1);
                     this.cartDetailRepository.save(oldDetail);
