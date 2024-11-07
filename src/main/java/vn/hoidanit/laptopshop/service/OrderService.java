@@ -51,4 +51,8 @@ public class OrderService {
         //Step 2: Delete Order
         this.orderRepository.deleteById(id);
     }
+
+    public long countOrder() {
+        return this.orderRepository.count();
+    }
 }
