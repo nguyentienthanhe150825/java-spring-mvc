@@ -71,7 +71,10 @@
                                             </div>
                                         </li>
 
-                                        <li><a class="dropdown-item" href="#">Quản lý tài khoản</a></li>
+                                        <!-- https://stackoverflow.com/questions/10993429/print-session-attributes-in-jsp -->
+                                        <c:if test="${sessionScope.role == 'ADMIN'}">
+                                            <li><a class="dropdown-item" href="/admin">Quản lý tài khoản</a></li>
+                                        </c:if>
 
                                         <li><a class="dropdown-item" href="#">Lịch sử mua hàng</a></li>
                                         <li>

@@ -66,13 +66,14 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
         }
         session.removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
 
-        // get email
+        // get email: https://www.baeldung.com/get-user-in-spring-security
         String email = authentication.getName();
 
         // query user
         User user = this.userService.getUserByEmail(email);
 
         if (user != null){
+            session.setAttribute("role", user.getRole().getName());
             session.setAttribute("fullName", user.getFullName());
             session.setAttribute("avatar", user.getAvatar());
             session.setAttribute("id", user.getId());
