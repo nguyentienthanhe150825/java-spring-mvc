@@ -71,7 +71,7 @@
                                             <th scope="col">Giá cả</th>
                                             <th scope="col">Số lượng</th>
                                             <th scope="col">Thành tiền</th>
-                                            <th scope="col">Xử ý</th>
+                                            <th scope="col">Xử lý</th>
                                         </tr>
                                     </thead>
                                     <tbody>

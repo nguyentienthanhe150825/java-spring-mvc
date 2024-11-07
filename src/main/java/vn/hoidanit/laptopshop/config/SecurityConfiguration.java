@@ -86,7 +86,7 @@ public class SecurityConfiguration {
 
                         // Không biết role: bất cứ ai cũng có thể truy cập vào homepage ("/") và xem chi
                         // tiết ("/product/**")
-                        .requestMatchers("/", "/login", "/product/**",
+                        .requestMatchers("/", "/login", "/product/**", "/register",
                                 "/client/**", "/css/**", "/js/**", "/images/**")
                         .permitAll()
                         // Default: hasRole sẽ tự động bỏ tiền tố prefix(ROLE_)

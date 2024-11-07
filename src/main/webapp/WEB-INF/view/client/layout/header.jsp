@@ -76,7 +76,7 @@
                                             <li><a class="dropdown-item" href="/admin">Quản lý tài khoản</a></li>
                                         </c:if>
 
-                                        <li><a class="dropdown-item" href="#">Lịch sử mua hàng</a></li>
+                                        <li><a class="dropdown-item" href="/order-history">Lịch sử mua hàng</a></li>
                                         <li>
                                             <hr class="dropdown-divider">
                                         </li>
