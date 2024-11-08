@@ -1,7 +1,11 @@
 package vn.hoidanit.laptopshop.controller.admin;
 
 import java.util.List;
+import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -33,9 +37,37 @@ public class ProductController {
     }
 
     @GetMapping("/admin/product")
-    public String getProduct(Model model) {
-        List<Product> products = this.productService.getAllProducts();
+    public String getProduct(Model model, @RequestParam("page") Optional<String> pageOptional) {
+        // database: quan tâm 2 tham số offset + limit
+        // công thức tính OFFSET phía back-end: OFFSET = Limit * (page-1)
+
+        // https://docs.spring.io/spring-data/rest/docs/2.0.0.M1/reference/html/paging-chapter.html
+        // https://stackoverflow.com/questions/56240870/paging-with-spring-mvc-jpa-and-datatables
+
+        int page = 1;
+        try {
+            if (pageOptional.isPresent()) {
+                // Convert from String to int
+                page = Integer.parseInt(pageOptional.get());
+            } else {
+                // page = 1
+            }
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+
+        Pageable pageable = PageRequest.of(page - 1, 5);
+
+        Page<Product> productsPage = this.productService.getAllProducts(pageable);
+
+        // Convert kiểu dữ liệu Page -> List để hiển thị ra view (vòng forEach dùng List
+        // chứ ko dùng page)
+        List<Product> products = productsPage.getContent();
         model.addAttribute("products", products);
+
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", productsPage.getTotalPages());
+
         return "admin/product/show";
     }
 
@@ -99,9 +131,9 @@ public class ProductController {
 
         Product currentProduct = this.productService.getProductById(dataProduct.getId()).get();
 
-        if(currentProduct != null) {
-            //update new image
-            if(!file.isEmpty()) {
+        if (currentProduct != null) {
+            // update new image
+            if (!file.isEmpty()) {
                 String img = this.uploadService.handleSaveUploadFile(file, "product");
                 currentProduct.setImage(img);
             }

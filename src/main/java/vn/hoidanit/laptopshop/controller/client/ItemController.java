@@ -33,7 +33,7 @@ public class ItemController {
 
     @GetMapping("/product/{id}")
     public String getProductPage(Model model, @PathVariable long id) {
-        List<Product> listProduct = this.productService.getAllProducts();
+        List<Product> listProduct = this.productService.getList();
         Product product = this.productService.getProductById(id).get();
         List<Product> productFactory = this.productService.getProductByFactory(product.getFactory());
         model.addAttribute("productFactory", productFactory);
