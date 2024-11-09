@@ -38,9 +38,6 @@ public class ProductController {
 
     @GetMapping("/admin/product")
     public String getProduct(Model model, @RequestParam("page") Optional<String> pageOptional) {
-        // database: quan tâm 2 tham số offset + limit
-        // công thức tính OFFSET phía back-end: OFFSET = Limit * (page-1)
-
         // https://docs.spring.io/spring-data/rest/docs/2.0.0.M1/reference/html/paging-chapter.html
         // https://stackoverflow.com/questions/56240870/paging-with-spring-mvc-jpa-and-datatables
 

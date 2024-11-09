@@ -71,6 +71,40 @@
 
                                             </tbody>
                                         </table>
+
+                                        <!-- Pagination -->
+                                        <nav aria-label="Page navigation example">
+                                            <ul class="pagination justify-content-center">
+                                                <li class="page-item">
+                                                    <a class="${currentPage eq 1 ? 'page-link disabled' : 'page-link'}"
+                                                        href="/admin/user?page=${currentPage - 1}"
+                                                        aria-label="Previous">
+                                                        <span aria-hidden="true">&laquo;</span>
+                                                        <span class="sr-only">Previous</span>
+                                                    </a>
+                                                </li>
+
+                                                <!-- Compare two values: https://stackoverflow.com/questions/17959332/how-to-compare-two-variables-in-jsp -->
+                                                <!-- Pagination: https://stackoverflow.com/questions/6099066/how-to-loop-over-something-a-specified-number-of-times-in-jstl/6099110#6099110 -->
+
+                                                <c:forEach begin="0" end="${totalPages - 1}" varStatus="loop">
+                                                    <li class="page-item">
+                                                        <a class="${(loop.index + 1) eq currentPage ? 'page-link active' : 'page-link'}"
+                                                            href="/admin/user?page=${loop.index + 1}">
+                                                            ${loop.index + 1}
+                                                        </a>
+                                                    </li>
+                                                </c:forEach>
+
+                                                <li class="page-item">
+                                                    <a class="${currentPage eq totalPages ? 'page-link disabled' : 'page-link'}"
+                                                        href="/admin/user?page=${currentPage + 1}" aria-label="Next">
+                                                        <span aria-hidden="true">&raquo;</span>
+                                                        <span class="sr-only">Next</span>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </nav>
                                     </div>
                                 </div>
                             </div>
