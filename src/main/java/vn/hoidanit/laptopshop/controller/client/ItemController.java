@@ -162,7 +162,9 @@ public class ItemController {
             @RequestParam("min-price") Optional<String> minOptional,
             @RequestParam("max-price") Optional<String> maxOptional,
             @RequestParam("factory") Optional<String> factoryOptional,
-            @RequestParam("price") Optional<String> priceOptional) {
+            @RequestParam("price") Optional<String> priceOptional,
+            @RequestParam("target") Optional<String> targetOptional,
+            @RequestParam("sort") Optional<String> sortOptional) {
 
         int page = 1;
         try {
@@ -173,37 +175,36 @@ public class ItemController {
         } catch (Exception e) {
             // TODO: handle exception
         }
-       
+
         Pageable pageable = PageRequest.of(page - 1, 10);
-       
 
         String name = nameOptional.isPresent() ? nameOptional.get() : "";
         Page<Product> productsPage = this.productService.getAllProductsWithSpec(pageable, name);
 
         // case 1:Lấy ra tất cả sản phẩm có giá cả tối thiểu là 1000 (vnd)
-        //double min = minOptional.isPresent() ? Double.parseDouble(minOptional.get()) : 0;
-        //Page<Product> productsPage = this.productService.getAllProductsWithSpecMin(pageable, min);
+        // double min = minOptional.isPresent() ? Double.parseDouble(minOptional.get()) : 0;
+        // Page<Product> productsPage = this.productService.getAllProductsWithSpecMin(pageable, min);
 
-        // case 2: Lấy ra tất cả sản phẩm có giá cả tối đa  là 100000 (vnd)
-        //double max = maxOptional.isPresent() ? Double.parseDouble(maxOptional.get()) : 0;
-        //Page<Product> productsPage = this.productService.getAllProductsWithSpecMax(pageable, max);
+        // case 2: Lấy ra tất cả sản phẩm có giá cả tối đa là 100000 (vnd)
+        // double max = maxOptional.isPresent() ? Double.parseDouble(maxOptional.get()) : 0;
+        // Page<Product> productsPage = this.productService.getAllProductsWithSpecMax(pageable, max);
 
         // case 3: Lấy ra tất cả sản phẩm có hãng sản xuất = APPLE
-        //String factory = factoryOptional.isPresent() ? factoryOptional.get() : "";
-        //Page<Product> productsPage = this.productService.getAllProductsWithSpecFactory(pageable, factory);
+        // String factory = factoryOptional.isPresent() ? factoryOptional.get() : "";
+        // Page<Product> productsPage = this.productService.getAllProductsWithSpecFactory(pageable, factory);
 
-        // case 4: Lấy ra tất cả sản phẩm có hãng sản xuất = APPLE hoặc DELL . Truyền nhiều điều kiện, ngăn cách các giá trị bởi dấu phẩy (điều kiện IN)
+        // case 4: Lấy ra tất cả sản phẩm có hãng sản xuất = APPLE hoặc DELL . Truyền
+        // nhiều điều kiện, ngăn cách các giá trị bởi dấu phẩy (điều kiện IN)
         // List<String> listFactory = Arrays.asList(factoryOptional.get().split(","));
-        // Page<Product> productsPage4 = this.productService.getAllProductsWithSpecListFactory(pageable, listFactory);
+        // Page<Product> productsPage = this.productService.getAllProductsWithSpecListFactory(pageable, listFactory);
 
-        // case 5: Lấy ra tất cả sản phẩm theo range (khoảng giá).  10 triệu < price <= 15 triệu
+        // case 5: Lấy ra tất cả sản phẩm theo range (khoảng giá). 10 triệu < price <= 15 triệu
         // String price = priceOptional.isPresent() ? priceOptional.get() : "";
         // Page<Product> productsPage = this.productService.getAllProductsWithSpecPrice(pageable, price);
 
-        // case 6: Lấy ra tất cả sản phẩm theo range (khoảng giá).  10 triệu < price <= 15 triệu và 15 triệu < price <= 30
-        //List<String> listPrice = Arrays.asList(priceOptional.get().split(","));
-        //Page<Product> productsPage = this.productService.getAllProductsWithSpecListPrice(pageable, listPrice);
-        
+        // case 6: Lấy ra tất cả sản phẩm theo range (khoảng giá). 10 triệu < price <= 15 triệu và 15 triệu < price <= 30
+        // List<String> listPrice = Arrays.asList(priceOptional.get().split(","));
+        // Page<Product> productsPage = this.productService.getAllProductsWithSpecListPrice(pageable, listPrice);
 
         List<Product> products = productsPage.getContent();
 
