@@ -16,6 +16,7 @@ import vn.hoidanit.laptopshop.domain.Cart;
 import vn.hoidanit.laptopshop.domain.CartDetail;
 import vn.hoidanit.laptopshop.domain.Product;
 import vn.hoidanit.laptopshop.domain.User;
+import vn.hoidanit.laptopshop.domain.dto.ProductCriteriaDTO;
 import vn.hoidanit.laptopshop.service.ProductService;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -156,21 +157,13 @@ public class ItemController {
     }
 
     @GetMapping("/products")
-    public String getProductPage(Model model,
-            @RequestParam("page") Optional<String> pageOptional,
-            @RequestParam("name") Optional<String> nameOptional,
-            @RequestParam("min-price") Optional<String> minOptional,
-            @RequestParam("max-price") Optional<String> maxOptional,
-            @RequestParam("factory") Optional<String> factoryOptional,
-            @RequestParam("price") Optional<String> priceOptional,
-            @RequestParam("target") Optional<String> targetOptional,
-            @RequestParam("sort") Optional<String> sortOptional) {
+    public String getProductPage(Model model, ProductCriteriaDTO productCriteriaDTO) {
 
         int page = 1;
         try {
-            if (pageOptional.isPresent()) {
+            if (productCriteriaDTO.getPage().isPresent()) {
                 // Convert from String to int
-                page = Integer.parseInt(pageOptional.get());
+                page = Integer.parseInt(productCriteriaDTO.getPage().get());
             }
         } catch (Exception e) {
             // TODO: handle exception
@@ -178,8 +171,11 @@ public class ItemController {
 
         Pageable pageable = PageRequest.of(page - 1, 10);
 
-        String name = nameOptional.isPresent() ? nameOptional.get() : "";
-        Page<Product> productsPage = this.productService.getAllProductsWithSpec(pageable, name);
+        Page<Product> productsPage = this.productService.getAllProductsWithProductCriteriaDTO(pageable, productCriteriaDTO);
+
+
+        // String name = nameOptional.isPresent() ? nameOptional.get() : "";
+        //Page<Product> productsPage = this.productService.getAllProducts(pageable);
 
         // case 1:Lấy ra tất cả sản phẩm có giá cả tối thiểu là 1000 (vnd)
         // double min = minOptional.isPresent() ? Double.parseDouble(minOptional.get()) : 0;
@@ -206,7 +202,7 @@ public class ItemController {
         // List<String> listPrice = Arrays.asList(priceOptional.get().split(","));
         // Page<Product> productsPage = this.productService.getAllProductsWithSpecListPrice(pageable, listPrice);
 
-        List<Product> products = productsPage.getContent();
+        List<Product> products = productsPage.getContent().size() > 0 ? productsPage.getContent() : new ArrayList<Product>();
 
         model.addAttribute("products", products);
         model.addAttribute("currentPage", page);
