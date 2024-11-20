@@ -157,7 +157,7 @@ public class ItemController {
     }
 
     @GetMapping("/products")
-    public String getProductPage(Model model, ProductCriteriaDTO productCriteriaDTO) {
+    public String getProductPage(Model model, ProductCriteriaDTO productCriteriaDTO, HttpServletRequest request) {
 
         int page = 1;
         try {
@@ -170,6 +170,7 @@ public class ItemController {
         }
 
         // check sort price
+        // https://www.baeldung.com/spring-data-jpa-pagination-sorting
         Pageable pageable = pageable = PageRequest.of(page - 1, 3);
 
         if (productCriteriaDTO.getSort() != null && productCriteriaDTO.getSort().isPresent()) {
@@ -187,9 +188,18 @@ public class ItemController {
         List<Product> products = productsPage.getContent().size() > 0 ? productsPage.getContent()
                 : new ArrayList<Product>();
 
+        // Fix bug pagination combine sort filter
+        String urlParams = request.getQueryString();
+        if (urlParams != null && !urlParams.isBlank()) {
+            //remove page
+            //url lúc này chỉ chứa các tham số sau page (vd: &sort=gia-tang-dan)
+            urlParams = urlParams.replace("page=" + page, "");
+        }
+
         model.addAttribute("products", products);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", productsPage.getTotalPages());
+        model.addAttribute("queryString", urlParams);
 
         return "client/product/show";
     }
